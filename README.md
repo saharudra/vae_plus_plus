@@ -1,0 +1,1 @@
+### Relaxing independent pixel assumption from observation space of vae.
