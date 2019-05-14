@@ -6,6 +6,8 @@ from torchvision import datasets, transforms
 from misc.utils import *
 import argparse
 
+import matplotlib.pyplot as plt
+
 
 def get_dataloaders(params):
 
@@ -48,4 +50,5 @@ if __name__ == '__main__':
 
     for idx, sample in enumerate(val_loader):
         img, label = sample
-        
+        print(img.size(), label.size())
+        import pdb; pdb.set_trace()        
