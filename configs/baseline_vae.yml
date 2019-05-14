@@ -9,3 +9,16 @@ num_workers: 4
 use_cuda: False
 batch_size: 64
 
+# Parameters for encoder
+encoder:
+  ic: 1
+  nef: 64
+  hidden: 256
+  zdim: 10
+
+# Parameters for decoder
+decoder:
+  oc: 1
+  ndf: 8
+
+
