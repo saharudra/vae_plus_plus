@@ -1,0 +1,11 @@
+exp_name: 'relaxing_independent_pixel_assumption'
+
+# Parameters related to data
+data_root: '/home/rudra/Downloads/rudra/vae_output_blur/relaxing_independent_pixel_assumption/data'
+dataset: 'cifar10'  # mnist | fashion-mnist | cifar10 | celeb
+num_workers: 4
+
+# Parameters related to training
+use_cuda: False
+batch_size: 64
+
