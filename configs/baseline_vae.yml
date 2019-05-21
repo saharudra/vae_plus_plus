@@ -2,7 +2,7 @@ exp_name: 'relaxing_independent_pixel_assumption'
 
 # Parameters related to data
 data_root: '/Users/i23271/Downloads/PhD/relaxing_independent_pixel_assumption/data/data'
-dataset: 'mnist'  # mnist (28x28x1) | fashion-mnist (28x28x1) | cifar10 (32x32x3) | celeb
+dataset: 'mnist'  # mnist (28x28x1) | fashion-mnist (28x28x1) | cifar10 (32x32x3) | celeb (64x64x3) | piece-wise (2)
 num_workers: 4
 
 # Parameters related to training

@@ -3,13 +3,18 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms 
 
-from misc.utils import *
 import argparse
-
 import matplotlib.pyplot as plt
 
+from misc.utils import *
+from dataloaders.celeb import celeb_dataloader
 
 def get_dataloaders(params):
+    """
+    :params: Global parameter from config file
+    :train_loader: Training set loader. Loads (img, label) tuple for all except piece-wise dataset.
+    :val_loader: Validation set loader. Loads (img, label) tuple for all except piece-wise dataset.
+    """
 
     kwargs = {'num_workers': params['num_workers'], 'pin_memory': params['use_cuda']}
     
@@ -36,6 +41,12 @@ def get_dataloaders(params):
         val_loader = DataLoader(datasets.CIFAR10(root=params['data_root'] + '/' + params['dataset'] + '/', train=False, download=True,
                                                         transform=transforms.Compose([transforms.ToTensor()])), batch_size=params['batch_size'], 
                                                         shuffle=False, **kwargs)
+    
+    elif params['dataset'] == 'celeb':
+        train_loader, val_loader = celeb_dataloader(params)
+
+    elif params['dataset'] == 'piece-wise':
+        train_loader, val_loader = piece_wise_dataloader(params)
 
     return train_loader, val_loader
 
