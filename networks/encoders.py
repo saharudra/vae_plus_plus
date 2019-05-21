@@ -24,20 +24,20 @@ class ConvEncoder28x28(nn.Module):
             nn.Conv2d(self.encoder_params['nef'] * 2, self.encoder_params['nef'] * 4, 3, 2, 1),
             nn.BatchNorm2d(self.encoder_params['nef'] * 4),
             nn.LeakyReLU(negative_slope=0.01, inplace=True),
-            nn.Conv2d(self.encoder_params['nef'] * 4, self.encoder_params['nef'] * 8, 4),
+            nn.Conv2d(self.encoder_params['nef'] * 4, self.encoder_params['nef'] * 8, 3, 2, 1),
             nn.BatchNorm2d(self.encoder_params['nef'] * 8),
             nn.LeakyReLU(negative_slope=0.01, inplace=True)
         )
 
         self.linear_mu = nn.Sequential(
-            nn.Linear(self.encoder_params['nef'] * 8, self.encoder_params['hidden']),
+            nn.Linear(self.encoder_params['nef'] * 32, self.encoder_params['hidden']),
             nn.BatchNorm1d(self.encoder_params['hidden']),
             nn.LeakyReLU(negative_slope=0.01, inplace=True),
             nn.Linear(self.encoder_params['hidden'], self.encoder_params['zdim'])
         )
 
         self.linear_logvar = nn.Sequential(
-            nn.Linear(self.encoder_params['nef'] * 8, self.encoder_params['hidden']),
+            nn.Linear(self.encoder_params['nef'] * 32, self.encoder_params['hidden']),
             nn.BatchNorm1d(self.encoder_params['hidden']),
             nn.LeakyReLU(negative_slope=0.01, inplace=True),
             nn.Linear(self.encoder_params['hidden'], self.encoder_params['zdim'])
@@ -80,7 +80,7 @@ if __name__ == '__main__':
     opts = parser.parse_args()
     params = get_config(opts.config)
 
-    img = torch.randn(64, 2)
-    encoder = PieceWiseEncoder(params)
+    img = torch.randn(64, 1, 28, 28)
+    encoder = ConvEncoder28x28(params)
     out, logvar = encoder(img)
     print(out.size())

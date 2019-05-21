@@ -22,7 +22,7 @@ kl_warmup: True
 mnist-encoder:
   ic: 1
   nef: 64
-  hidden: 256
+  hidden: 512
   zdim: 10
 
 piece-wise-encoder:
@@ -33,7 +33,12 @@ piece-wise-encoder:
 # Parameters for decoders
 mnist-decoder:
   oc: 1
-  ndf: 8
+  ndf: 64
+  zdim: 10
+  hidden: 512
+  mid_c: 512
+  mid_h: 2
+  mid_w: 2
 
 piece-wise-decoder:
   oc: 2
