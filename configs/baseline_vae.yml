@@ -17,6 +17,12 @@ batch_size: 64
 init_type: 'normal'  # Initialization type for the network. normal | xavier | kaiming | orthogonal
 gain: 0.02
 kl_warmup: True
+loss_type: bce
+
+# Parameters related to current training
+# TODO: Make this standard
+img_h: 28
+img_w: 28
 
 # Parameters for encoders
 mnist-encoder:
