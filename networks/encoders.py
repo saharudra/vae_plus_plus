@@ -9,7 +9,7 @@ class ConvEncoder28x28(nn.Module):
     def __init__(self, params):
         super(ConvEncoder28x28, self).__init__()
         self.params = params
-        self.encoder_params = params['encoder']
+        self.encoder_params = params['mnist-encoder']
 
         self.encoder()
 
@@ -47,7 +47,31 @@ class ConvEncoder28x28(nn.Module):
         conv_feature_map = self.conv_encoder(img)
         flattened_feature_map = conv_feature_map.view(self.params['batch_size'], -1)
         mu, logvar = self.linear_mu(flattened_feature_map), self.linear_logvar(flattened_feature_map)
-        return mu
+        return mu, logvar
+
+
+class PieceWiseEncoder(nn.Module):
+    def __init__(self, params):
+        super(PieceWiseEncoder, self).__init__()
+        self.params = params
+        self.encoder_params = self.params['piece-wise-encoder']
+
+        self.encoder()
+
+    def encoder(self):
+        self.linear_encoder = nn.Sequential(
+            nn.Linear(self.encoder_params['ic'], self.encoder_params['hidden']),
+            nn.BatchNorm1d(self.encoder_params['hidden']),
+            nn.LeakyReLU(inplace=True)
+        )
+
+        self.mu = nn.Linear(self.encoder_params['hidden'], self.encoder_params['zdim'])
+        self.logvar = nn.Linear(self.encoder_params['hidden'], self.encoder_params['zdim'])
+
+    def forward(self, point):
+        linear_features = self.linear_encoder(point)
+        mu, logvar = self.mu(linear_features), self.logvar(linear_features)
+        return mu, logvar
 
 
 if __name__ == '__main__':
@@ -56,7 +80,7 @@ if __name__ == '__main__':
     opts = parser.parse_args()
     params = get_config(opts.config)
 
-    img = torch.randn(64, 1, 28, 28)
-    encoder = ConvEncoder28x28(params)
-    out = encoder(img)
+    img = torch.randn(64, 2)
+    encoder = PieceWiseEncoder(params)
+    out, logvar = encoder(img)
     print(out.size())

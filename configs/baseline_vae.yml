@@ -17,16 +17,26 @@ batch_size: 64
 init_type: 'normal'  # Initialization type for the network. normal | xavier | kaiming | orthogonal
 gain: 0.02
 
-# Parameters for encoder
-encoder:
+# Parameters for encoders
+mnist-encoder:
   ic: 1
   nef: 64
   hidden: 256
   zdim: 10
 
-# Parameters for decoder
-decoder:
+piece-wise-encoder:
+  ic: 2
+  hidden: 128
+  zdim: 2
+
+# Parameters for decoders
+mnist-decoder:
   oc: 1
   ndf: 8
+
+piece-wise-decoder:
+  oc: 2
+  hidden: 128
+  zdim: 2
 
 
