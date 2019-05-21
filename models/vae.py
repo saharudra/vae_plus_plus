@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn 
 import numpy as np 
 
+from scipy.misc import logsumexp
+
 from networks.encoders import ConvEncoder28x28
 from networks.decoders import ConvDecoder28x28
 
@@ -36,12 +38,47 @@ class VAE(nn.Module):
             recons_loss = loss_criterion(recons_img, img)
 
         kl_loss = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
-        loss = recons_loss + kl_loss
+        loss = recons_loss + self.params['kl_beta'] * kl_loss
 
         return loss, recons_loss, kl_loss
 
     def calculate_likelihood(self, img, dir, mode='val', S=5000, MB=100):
-        pass
+        N_test = img.size(0)
+
+        likelihood_val = []
+
+        if S <= MB:
+            R = 1
+        else:
+            R = S / MB
+            S = MB
+        
+        for j in range(N_test):
+            if j % 100 == 0:
+                print('{:.2f}%'.format(j / (1. * N_test) * 100))
+            # Take x*
+            x_single = img[j].unsqueeze(0)
+
+            a = []
+            for r in range(0, int(R)):
+                # Repeat it for all training points
+                x = x_single.expand(S, x_single.size(1))
+
+                a_tmp, _, _ = self.calculate_loss(x)
+
+                a.append( -a_tmp.cpu().data.numpy() )
+
+            # calculate max
+            a = np.asarray(a)
+            a = np.reshape(a, (a.shape[0] * a.shape[1], 1))
+            likelihood_x = logsumexp( a )
+            likelihood_test.append(likelihood_x - np.log(len(a)))
+
+        likelihood_test = np.array(likelihood_test)
+
+        plot_histogram(-likelihood_test, dir, mode)
+
+        return -np.mean(likelihood_test)
 
     def forward(self, x):
         z_mu, z_logvar = self.enc(x)
