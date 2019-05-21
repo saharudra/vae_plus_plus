@@ -5,6 +5,12 @@ data_root: '/Users/i23271/Downloads/PhD/relaxing_independent_pixel_assumption/da
 dataset: 'mnist'  # mnist (28x28x1) | fashion-mnist (28x28x1) | cifar10 (32x32x3) | celeb (64x64x3) | piece-wise (2)
 num_workers: 4
 
+# Parameters related to datasets
+piece-wise:
+  num_samples: 1000 # Number of samples to be taken from each of the linear section.
+  num_sections: 3 # Number of linear sections 
+  sample: 'uniform' # Way of sampling from each of the linear section. uniform | vertex-heavy
+
 # Parameters related to training
 use_cuda: False
 batch_size: 64

@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 
 from misc.utils import *
 from dataloaders.celeb import celeb_dataloader
+from dataloaders.piece_wise_linear import piece_wise_dataloader
 
 def get_dataloaders(params):
     """
