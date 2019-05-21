@@ -14,6 +14,8 @@ piece-wise:
 # Parameters related to training
 use_cuda: False
 batch_size: 64
+init_type: 'normal'  # Initialization type for the network. normal | xavier | kaiming | orthogonal
+gain: 0.02
 
 # Parameters for encoder
 encoder:
