@@ -25,10 +25,18 @@ pp.pprint(params)
 
 # Define dataloaders and model
 train_loader, val_loader = get_dataloaders(params)
-model = VAE
+model = VAE(params)
 
 if params['use_cuda']:
     model = model.cuda()
 
-logger = Logger()
+exp_results = params['project_root'] + '/results/' + params['exp_name'] + '_' + timestamp + '/'
+exp_logs = params['project_root'] + '/logs/' + params['exp_name'] + '_' + timestamp + '/'
+mkdir_p(exp_logs)
+mkdir_p(exp_results)
+
+logger = Logger(exp_logs)
+
+vae_trainer = VAETrainer(params, model, train_loader, val_loader, logger)
+vae_trainer.train()
 
