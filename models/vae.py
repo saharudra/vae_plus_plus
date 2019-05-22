@@ -42,7 +42,7 @@ class VAE(nn.Module):
 
         return loss, recons_loss, kl_loss
 
-    def calculate_likelihood(self, img, dir, mode='val', S=5000, MB=100):
+    def calculate_likelihood(self, img, S=5000, MB=100):
         N_test = img.size(0)
 
         likelihood_val = []
@@ -76,9 +76,21 @@ class VAE(nn.Module):
 
         likelihood_test = np.array(likelihood_test)
 
-        plot_histogram(-likelihood_test, dir, mode)
+        # plot_histogram(-likelihood_test, dir, mode)
 
         return -np.mean(likelihood_test)
+
+    def reconstruct(self, x):
+        x_mu, _, _, _ = self.forward(x)
+        return x_mu
+
+    def generate(self):
+        z_sample = torch.FloatTensor(self.params['batch_size'].normal_())
+        if self.params['use_cuda']:
+            z_sample = z_sample.cuda()
+        
+        gen_x = self.dec(z_sample)
+        return gen_x
 
     def forward(self, x):
         z_mu, z_logvar = self.enc(x)
