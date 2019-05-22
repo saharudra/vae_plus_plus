@@ -11,7 +11,7 @@ class VAE(nn.Module):
     def __init__(self, params):
         super(VAE, self).__init__()
         self.params = params
-        self.enc = ConvEncoder28x28(params)
+        self.enc = ConvEncoder28x28(params)  # TODO: Define the encoder and the dec to be used in the param file
         self.dec = ConvDecoder28x28(params)
     
     def reparameterize(self, mu, logvar):
