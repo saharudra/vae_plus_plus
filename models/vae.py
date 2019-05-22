@@ -1,7 +1,7 @@
 import torch 
 import torch.nn as nn 
 import numpy as np 
-
+import torch.nn.functional as F
 from scipy.misc import logsumexp
 
 from networks.encoders import ConvEncoder28x28
@@ -24,16 +24,16 @@ class VAE(nn.Module):
 
     def calculate_losses(self, img):
         recons_img, latent, mu, logvar = self.forward(img)
-        if params['loss_type'] == 'bce':
+        if self.params['loss_type'] == 'bce':
             recons_loss = F.binary_cross_entropy(recons_img.view(-1, self.params['img_h'] * self.params['img_w'] * 1), 
                                                 img.view(-1, self.params['img_h'] * self.params['img_w'] * 1),
                                                 size_average=False)
-        elif params['loss_type'] == 'bce_logits':
+        elif self.params['loss_type'] == 'bce_logits':
             recons_loss = F.binary_cross_entropy_with_logits(recons_img.view(-1, self.params['img_h'] * self.params['img_w'] * 3), 
                                                             img.view(-1, self.params['img_h'] * self.params['img_w'] * 3))
-        elif params['loss_type'] == 'l1':
+        elif self.params['loss_type'] == 'l1':
             recons_loss = torch.mean(torch.abs(recons_img - img))
-        elif params['loss_type'] == 'l2':
+        elif self.params['loss_type'] == 'l2':
             loss_criterion = nn.MSELoss()
             recons_loss = loss_criterion(recons_img, img)
 

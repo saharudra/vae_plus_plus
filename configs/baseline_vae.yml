@@ -1,8 +1,8 @@
 exp_name: 'relaxing_independent_pixel_assumption'
 
 # Parameters related to data
-project_root: '/Users/i23271/Downloads/PhD/vae_plus_plus'
-data_root: '/Users/i23271/Downloads/PhD/vae_plus_plus/data/data'
+project_root: '/data/Rudra/vae_output_blur/vae_plus_plus'
+data_root: '/data/Rudra/vae_output_blur/vae_plus_plus/data/data'
 dataset: 'mnist'  # mnist (28x28x1) | fashion-mnist (28x28x1) | cifar10 (32x32x3) | celeb (64x64x3) | piece-wise (2)
 num_workers: 4
 
@@ -13,7 +13,7 @@ piece-wise:
   sample: 'uniform' # Way of sampling from each of the linear section. uniform | vertex-heavy
 
 # Parameters related to training
-use_cuda: False
+use_cuda: True
 batch_size: 64
 init_type: 'normal'  # Initialization type for the network. normal | xavier | kaiming | orthogonal
 gain: 0.02

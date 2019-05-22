@@ -37,6 +37,6 @@ mkdir_p(exp_results)
 
 logger = Logger(exp_logs)
 
-vae_trainer = VAETrainer(params, model, train_loader, val_loader, logger)
+vae_trainer = VAETrainer(params, model, train_loader, val_loader, logger, exp_results, exp_logs)
 vae_trainer.train()
 

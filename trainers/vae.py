@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn 
 from torchvision.utils import save_image
 import numpy as np 
+from tqdm import trange
 
 from misc.utils import *
 
@@ -25,6 +26,9 @@ class VAETrainer(nn.Module):
                 for idx, sample in enumerate(self.train_loader):
                     loss_dict = {}
                     img, label = sample
+
+                    if img.size(0) != self.params['batch_size']:
+                        break
 
                     if self.params['use_cuda']:
                         img = img.cuda()

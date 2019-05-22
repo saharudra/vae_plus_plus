@@ -32,7 +32,8 @@ class ConvDecoder28x28(nn.Module):
             nn.ConvTranspose2d(self.decoder_params['ndf'] * 2, self.decoder_params['ndf'], 4, 2, 1),
             nn.BatchNorm2d(self.decoder_params['ndf']), 
             nn.LeakyReLU(inplace=True), 
-            nn.ConvTranspose2d(self.decoder_params['ndf'], self.decoder_params['oc'], 4, 2, 1)
+            nn.ConvTranspose2d(self.decoder_params['ndf'], self.decoder_params['oc'], 4, 2, 1),
+            nn.Sigmoid()
         )
 
     def forward(self, z):
