@@ -66,7 +66,7 @@ class VAETrainer(nn.Module):
                 img = img.cuda()
             
             vae_loss, recon_loss, kl_loss = self.model.calculate_losses(img)
-            likelihood = self.model.calculate_likelihood(img)
+            likelihood = self.model.calculate_log_likelihood(img)
 
             loss_dict_val = info_dict('likelihood_val', likelihood, loss_dict_val)
             loss_dict_val = info_dict('vae_loss_val', vae_loss.item(), loss_dict_val)

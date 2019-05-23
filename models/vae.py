@@ -72,13 +72,43 @@ class VAE(nn.Module):
             a = np.asarray(a)
             a = np.reshape(a, (a.shape[0] * a.shape[1], 1))
             likelihood_x = logsumexp( a )
-            likelihood_test.append(likelihood_x - np.log(len(a)))
+            likelihood_val.append(likelihood_x - np.log(len(a)))
 
-        likelihood_test = np.array(likelihood_test)
+        likelihood_val = np.array(likelihood_val)
 
         # plot_histogram(-likelihood_test, dir, mode)
 
-        return -np.mean(likelihood_test)
+        return -np.mean(likelihood_val)
+
+    def calculate_log_likelihood(self, img, S=5000, MB=100):
+        N_test = img.size(0)
+        likelihood_val = []
+
+        if S <= MB:
+            R = 1
+        else:
+            R = S / MB
+            S = MB
+
+        for j in range(N_test):
+            if j % 100 == 0:
+                print('{:.2f}%'.format(j / (1. * N_test) * 100))
+            x_single = img[j].unsqueeze(0)
+
+            a = []
+
+            for r in range(0, int(R)):
+                a_tmp, _, _ = self.calculate_losses(x_single)
+                a.append(-a_tmp.cpu().data.numpy())
+
+            a = np.asarray(a)
+            a = np.reshape(a, (a.shape[0] * a.shape[1], 1))
+            likelihood_x = logsumexp(a)
+            likelihood_val.append(likelihood_x - np.log(len(a)))
+        
+        likelihood_val = np.array(likelihood_val)
+
+        return -np.mean(likelihood_val)
 
     def reconstruct(self, x):
         x_mu, _, _, _ = self.forward(x)
