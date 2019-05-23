@@ -45,7 +45,7 @@ class ConvEncoder28x28(nn.Module):
 
     def forward(self, img):
         conv_feature_map = self.conv_encoder(img)
-        flattened_feature_map = conv_feature_map.view(self.params['batch_size'], -1)
+        flattened_feature_map = conv_feature_map.view(img.size(0), -1)
         mu, logvar = self.linear_mu(flattened_feature_map), self.linear_logvar(flattened_feature_map)
         return mu, logvar
 

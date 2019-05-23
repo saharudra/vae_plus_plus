@@ -67,14 +67,13 @@ class VAETrainer(nn.Module):
             
             vae_loss, recon_loss, kl_loss = self.model.calculate_losses(img)
             likelihood = self.model.calculate_log_likelihood(img)
-
-            loss_dict_val = info_dict('likelihood_val', likelihood, loss_dict_val)
+            loss_dict_val = info_dict('likelihood_val', likelihood.item(), loss_dict_val)
             loss_dict_val = info_dict('vae_loss_val', vae_loss.item(), loss_dict_val)
-            loss_dict_val = info_dict('recon_loss_val', recon_loss.item, loss_dict_val)
+            loss_dict_val = info_dict('recon_loss_val', recon_loss.item(), loss_dict_val)
             loss_dict_val = info_dict('kl_loss_val', kl_loss.item(), loss_dict_val)        
 
             for tag, value in loss_dict_val.items():
-                        self.logger.scalar_summary(tag, value, iteration)
+                self.logger.scalar_summary(tag, value, iteration)
 
             recon_img = self.model.reconstruct(img)
             gen_img = self.model.generate()
@@ -84,8 +83,8 @@ class VAETrainer(nn.Module):
         save_image(gen_img, self.exp_result_path + '/' + str(epoch) + '_generated_img.jpg')
         likelihood_val = np.mean(np.array(likelihood_val))
 
-        print("Epoch#{}; vae_loss: {0.4f}; recon_loss: {0.4f}; kl_loss: {0.4f}".format(epoch, 
+        print("Epoch#{}; vae_loss: {}; recon_loss: {}; kl_loss: {}; likelihood: {}".format(epoch, 
                                                                                        vae_loss, recon_loss,
-                                                                                       kl_loss))
+                                                                                       kl_loss, likelihood_val))
 
             

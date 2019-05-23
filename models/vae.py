@@ -58,6 +58,7 @@ class VAE(nn.Module):
                 print('{:.2f}%'.format(j / (1. * N_test) * 100))
             # Take x*
             x_single = img[j].unsqueeze(0)
+            print("Shape of x_single is {}".format(x_single.shape))
 
             a = []
             for r in range(0, int(R)):
@@ -91,8 +92,6 @@ class VAE(nn.Module):
             S = MB
 
         for j in range(N_test):
-            if j % 100 == 0:
-                print('{:.2f}%'.format(j / (1. * N_test) * 100))
             x_single = img[j].unsqueeze(0)
 
             a = []
@@ -102,7 +101,7 @@ class VAE(nn.Module):
                 a.append(-a_tmp.cpu().data.numpy())
 
             a = np.asarray(a)
-            a = np.reshape(a, (a.shape[0] * a.shape[1], 1))
+            a = np.reshape(a, (a.shape[0], 1))
             likelihood_x = logsumexp(a)
             likelihood_val.append(likelihood_x - np.log(len(a)))
         
@@ -115,10 +114,9 @@ class VAE(nn.Module):
         return x_mu
 
     def generate(self):
-        z_sample = torch.FloatTensor(self.params['batch_size'].normal_())
+        z_sample = torch.FloatTensor(self.params['batch_size'], self.params['mnist-decoder']['zdim']).normal_()
         if self.params['use_cuda']:
             z_sample = z_sample.cuda()
-        
         gen_x = self.dec(z_sample)
         return gen_x
 
