@@ -66,8 +66,6 @@ class VAETrainer(nn.Module):
                 img = img.cuda()
             
             vae_loss, recon_loss, kl_loss = self.model.calculate_losses(img)
-            likelihood = self.model.calculate_log_likelihood(img)
-            loss_dict_val = info_dict('likelihood_val', likelihood.item(), loss_dict_val)
             loss_dict_val = info_dict('vae_loss_val', vae_loss.item(), loss_dict_val)
             loss_dict_val = info_dict('recon_loss_val', recon_loss.item(), loss_dict_val)
             loss_dict_val = info_dict('kl_loss_val', kl_loss.item(), loss_dict_val)        
@@ -77,14 +75,22 @@ class VAETrainer(nn.Module):
 
             recon_img = self.model.reconstruct(img)
             gen_img = self.model.generate()
-            likelihood_val.append(likelihood)
+
+            if epoch % self.params['likelihood_loggin_interval'] == 0:
+                likelihood = self.model.calculate_log_likelihood(img)
+                loss_dict_val = info_dict('likelihood_val', likelihood.item(), loss_dict_val)
+                likelihood_val.append(likelihood)
+
         save_image(img, self.exp_result_path + '/' + str(epoch) + '_original_img.jpg')
         save_image(recon_img, self.exp_result_path + '/' + str(epoch) + '_reconstructed_img.jpg')
         save_image(gen_img, self.exp_result_path + '/' + str(epoch) + '_generated_img.jpg')
-        likelihood_val = np.mean(np.array(likelihood_val))
 
-        print("Epoch#{}; vae_loss: {}; recon_loss: {}; kl_loss: {}; likelihood: {}".format(epoch, 
+        if epoch % self.params['likelihood_loggin_interval'] == 0:
+            likelihood_val = np.mean(np.array(likelihood_val))
+            print("Epoch#{}; vae_loss: {}; recon_loss: {}; kl_loss: {}; likelihood: {}".format(epoch, 
                                                                                        vae_loss, recon_loss,
                                                                                        kl_loss, likelihood_val))
-
+        else:
+            print("Epoch#{}; vae_loss: {}; recon_loss: {}; kl_loss: {}".format(epoch, vae_loss, recon_loss,
+                                                                               kl_loss))
             
